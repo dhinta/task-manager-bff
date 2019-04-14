@@ -1,5 +1,5 @@
-import * as winston from "winston";
-import DailyRotateFile, { DailyRotateFileTransportOptions } from "winston-daily-rotate-file";
+import * as winston from 'winston';
+import DailyRotateFile, { DailyRotateFileTransportOptions } from 'winston-daily-rotate-file';
 
 export class Logger {
 
@@ -14,7 +14,7 @@ export class Logger {
     }
 
     configureLogger() {
-        let rotationOpts: DailyRotateFileTransportOptions = {
+        const rotationOpts: DailyRotateFileTransportOptions = {
             filename: 'tm-bff-%DATE%.log',
             dirname: 'logs/',
             datePattern: 'YYYY-MM-DD-HH',

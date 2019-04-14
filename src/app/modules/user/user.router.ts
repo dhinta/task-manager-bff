@@ -13,8 +13,8 @@ class UserRoutes {
     }
 
     routes() {
-        this.route.get("/", (req: express.Request, res: express.Response) => res.status(403).end());
-        this.route.get("/login", (req: express.Request, res: express.Response) => {
+        this.route.get('/', (req: express.Request, res: express.Response) => res.status(403).end());
+        this.route.get('/login', (req: express.Request, res: express.Response) => {
             controller.login(req, res);
         });
     }

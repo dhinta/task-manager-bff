@@ -1,0 +1,8 @@
+{
+    "authorizationMessages": {
+        "passwordRequired": {
+            "error": true,
+            "message": "Password is required"
+        }
+    }
+}

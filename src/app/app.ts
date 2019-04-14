@@ -1,11 +1,12 @@
-import express from "express";
-import bodyParser from "body-parser";
-import https from "https";
-import http from "http";
-import fs from "fs";
-import path from "path";
-import { user } from "./modules/user";
-import Logger from "./libs/logger";
+import bodyParser from 'body-parser';
+import express from 'express';
+import fs from 'fs';
+import http from 'http';
+import https from 'https';
+import path from 'path';
+import AppConfig from './configs/app.config';
+import Logger from './libs/logger';
+import { user } from './modules/user';
 
 class App {
     public app: express.Application;
@@ -22,38 +23,47 @@ class App {
             extended: true
         }));
 
-        this.app.use("/user", user.route);
-
         this.forceSecure();
         this.routes();
     }
 
     forceSecure() {
-        this.app.use((req: express.Request, res: express.Response, next: Function) => {
+        this.app.use((req: express.Request, res: express.Response, next: () => void) => {
             if (req.secure) {
                 next();
             } else {
-                res.redirect('https://localhost:3000');
+                res.redirect(AppConfig.baseUrl);
             }
         });
     }
 
     routes() {
         // API ROOT
-        this.app.get("/", (req: express.Request, res: express.Response) => {
+        this.app.get(AppConfig.baseApiPath, (req: express.Request, res: express.Response) => {
             Logger.log({
                 level: 'info',
                 message: 'Unauthorized access attempt in root url'
             });
             res.status(403).end();
         });
+        // Validation Rules Route
+        this.app.get(AppConfig.baseApiPath + '/validationRules', (req: express.Request, res: express.Response) => {
+            fs.readFile (path.resolve('src/data/validation-rules.json'), (err: NodeJS.ErrnoException, data: Buffer) => {
+                if (err) {
+                    console.log('handle error'); // TODO: Error Handling
+                }
+                res.send(JSON.parse(data.toString()));
+            });
+        });
+        // User Routes
+        this.app.use(AppConfig.baseApiPath + '/user', user.route);
     }
 
     serve() {
-        let options = {
-            key: fs.readFileSync(path.resolve('src/ssl-key/private.key')),
-            cert: fs.readFileSync(path.resolve('src/ssl-key/certificate.crt'))
-        }
+        const options = {
+            key: fs.readFileSync(path.resolve('src/secure/ssl-private.key')),
+            cert: fs.readFileSync(path.resolve('src/secure/ssl-certificate.crt'))
+        };
         // Secure Server
         https.createServer(options, this.app).listen(this.port);
         // Non Secure Server
