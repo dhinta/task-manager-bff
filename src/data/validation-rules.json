@@ -3,6 +3,24 @@
         "passwordRequired": {
             "error": true,
             "message": "Password is required"
+        },
+        "passwordLength": {
+            "error": true,
+            "message": "Password must be atleast six character long"
+        },
+        "invalidEmail": {
+            "error": true,
+            "message": "Invalid email id"
+        },
+        "invalidCredentials": {
+            "error": true,
+            "message": "Invalid credentials"
+        }
+    },
+    "errorResponse": {
+        "serviceDown": {
+            "error": true,
+            "message": "Service is temporarily down. Please try again later."
         }
     }
 }

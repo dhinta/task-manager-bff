@@ -16,6 +16,11 @@ class AuthToken {
             console.log(e); // TODO: Error Handling
         }
     }
+
+    verify(token: string, callback: (err: any, decoded: any) => void) {
+        const privateKey: Buffer = fs.readFileSync(path.resolve('src/secure/jwtRS256.key'));
+        jwt.verify(token, privateKey, callback);
+    }
 }
 
 export default new AuthToken();

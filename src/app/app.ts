@@ -1,4 +1,6 @@
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import express from 'express';
 import fs from 'fs';
 import http from 'http';
@@ -10,7 +12,7 @@ import { user } from './modules/user';
 
 class App {
     public app: express.Application;
-    public port: string | number = process.env.port || 3000;
+    public port: string | number = process.env.port || AppConfig.port;
 
     constructor() {
         this.app = express();
@@ -21,6 +23,11 @@ class App {
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({
             extended: true
+        }));
+        this.app.use(cookieParser());
+        this.app.use(cors({
+            origin: AppConfig.whiteListedEndPoints,
+            credentials: true
         }));
 
         this.forceSecure();
@@ -48,11 +55,13 @@ class App {
         });
         // Validation Rules Route
         this.app.get(AppConfig.baseApiPath + '/validationRules', (req: express.Request, res: express.Response) => {
-            fs.readFile (path.resolve('src/data/validation-rules.json'), (err: NodeJS.ErrnoException, data: Buffer) => {
+            fs.readFile(path.resolve('src/data/validation-rules.json'), (err: NodeJS.ErrnoException, data: Buffer) => {
                 if (err) {
                     console.log('handle error'); // TODO: Error Handling
                 }
-                res.send(JSON.parse(data.toString()));
+                res.send({
+                    data: JSON.parse(data.toString())
+                });
             });
         });
         // User Routes

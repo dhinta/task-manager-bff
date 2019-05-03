@@ -1,5 +1,5 @@
-import authToken from '../../libs/jwt';
 import express from 'express';
+import authToken from '../../libs/jwt';
 import Logger from '../../libs/logger';
 
 const user = {
@@ -20,7 +20,7 @@ class UserController {
             level: 'info',
             message: 'UserController::login'
         });
-        if (req.query.email === user.email && req.query.password === user.password) {
+        if (req.body.email === user.email && req.body.password === user.password) {
             Logger.log({
                 level: 'info',
                 message: 'UserController::login::Valid Credentials'
@@ -32,6 +32,7 @@ class UserController {
             };
             const token = authToken.generate(oUser);
             console.log(token);
+            res.cookie('authToken', token, { httpOnly: true, secure: true, path: '/' });
             res.send({
                 data: {
                     success: true,
@@ -46,10 +47,14 @@ class UserController {
             res.send({
                 data: {
                     success: false,
-                    messages: ['loginFailed']
+                    messages: ['invalidCredentials']
                 }
             });
         }
+    }
+
+    dashboard(req: express.Request, res: express.Response) {
+        res.send(req.cookies);
     }
 }
 
