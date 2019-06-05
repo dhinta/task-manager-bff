@@ -47,3 +47,6 @@ typings/
 
 # next.js build output
 .next
+
+# editor
+.vscode

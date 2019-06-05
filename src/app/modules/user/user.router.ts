@@ -14,12 +14,14 @@ class UserRoutes extends BaseRouter {
     }
 
     routes() {
-        this.route.get('/', (req: express.Request, res: express.Response) => res.status(403).end());
+        this.route.get('/', (req: express.Request, res: express.Response) => {
+            controller.index(req, res);
+        });
         this.route.post('/login', (req: express.Request, res: express.Response) => {
             controller.login(req, res);
         });
-        this.route.get('/dashboard', (req: express.Request, res: express.Response) => {
-            controller.dashboard(req, res);
+        this.route.get('/signout', (req: express.Request, res: express.Response) => {
+            controller.logout(req, res);
         });
     }
 }

@@ -19,12 +19,9 @@ export class BaseRouter {
                 next();
             } else {
                 const token = req.cookies.authToken;
-                console.log('hiii');
-                console.log(token);
                 authToken.verify(token, (err: any, decoded: any) => {
-                    this.verifyToken(err, decoded, res);
+                    this.verifyToken(err, decoded, res, next);
                 });
-                next();
             }
         });
     }
@@ -34,9 +31,8 @@ export class BaseRouter {
         return (noVerifyUrls.indexOf(url) > -1);
     }
 
-    verifyToken(err: any, decoded: any, res: express.Response) {
+    verifyToken(err: any, decoded: any, res: express.Response, next: () => void) {
         if (err) {
-            console.log(err);
             res.clearCookie('authToken', { path: '/' });
             res.send({
                 data: {
@@ -44,8 +40,9 @@ export class BaseRouter {
                     logout: true
                 }
             });
-
+            return;
         }
-        console.log(decoded);
+        res.locals.user = decoded;
+        next();
     }
 }

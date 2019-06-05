@@ -8,6 +8,7 @@ import https from 'https';
 import path from 'path';
 import AppConfig from './configs/app.config';
 import Logger from './libs/logger';
+import { project } from './modules/project';
 import { user } from './modules/user';
 
 class App {
@@ -66,6 +67,8 @@ class App {
         });
         // User Routes
         this.app.use(AppConfig.baseApiPath + '/user', user.route);
+        // Project Routes
+        this.app.use(AppConfig.baseApiPath + '/project', project.route);
     }
 
     serve() {

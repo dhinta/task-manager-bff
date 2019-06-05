@@ -7,12 +7,22 @@ const user = {
     name: 'Debasish Chowdhury',
     email: 'relaxed.dhinta@gmail.com',
     password: '123456'
-}
+};
 
 class UserController {
 
     constructor() {
 
+    }
+
+    index(req: express.Request, res: express.Response) {
+        Logger.log({
+            level: 'info',
+            message: 'UserController::index::Send user info'
+        });
+        res.send({
+            data: res.locals.user
+        });
     }
 
     login(req: express.Request, res: express.Response) {
@@ -31,7 +41,6 @@ class UserController {
                 email: user.email
             };
             const token = authToken.generate(oUser);
-            console.log(token);
             res.cookie('authToken', token, { httpOnly: true, secure: true, path: '/' });
             res.send({
                 data: {
@@ -53,8 +62,14 @@ class UserController {
         }
     }
 
-    dashboard(req: express.Request, res: express.Response) {
-        res.send(req.cookies);
+    logout(req: express.Request, res: express.Response) {
+        res.clearCookie('authToken', { path: '/' });
+        res.send({
+            data: {
+                success: false,
+                logout: true
+            }
+        });
     }
 }
 

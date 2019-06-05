@@ -18,8 +18,11 @@ class AuthToken {
     }
 
     verify(token: string, callback: (err: any, decoded: any) => void) {
-        const privateKey: Buffer = fs.readFileSync(path.resolve('src/secure/jwtRS256.key'));
-        jwt.verify(token, privateKey, callback);
+        const privateKey: Buffer = fs.readFileSync(path.resolve('src/secure/jwtRS256.key.pub'));
+        const result = jwt.verify(token, privateKey, {
+            algorithms: ['RS256']
+        });
+        callback(null, result);
     }
 }
 
